@@ -1,0 +1,7 @@
+name = Simple Mail System
+description = Provides a user interface for per-module and site-wide mail system selection.
+backdrop = 1.x
+type = module
+package = Mail
+configure = admin/config/system/simple_mailsystem
+

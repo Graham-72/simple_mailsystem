@@ -1,0 +1,49 @@
+<?php
+/**
+ * @file
+ * Provide UI for controlling the mail_system variable.
+ */
+
+/**
+ * Implements hook_config_info().
+ */
+function simple_mailsystem_config_info() {
+  $prefixes['simple_mailsystem.settings'] = array(
+    'label' => t('simple_mailsystem settings'),
+    'group' => t('mailsystem'),
+  );
+  return $prefixes;
+}
+
+/**
+ * Implements hook_permission().
+ *
+ * Defines a permission for managing the mail_system variable.
+ */
+function simple_mailsystem_permission()
+{
+  return array(
+    'administer mailsystem' => array(
+      'title' => t('Administer Mail System'),
+      'description' => t(
+        'Select the default, per-module, and per-mailing mail system to use for formatting and sending email messages.'
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function simple_mailsystem_menu()
+{
+  $items['admin/config/system/simple_mailsystem'] = array(
+    'title' => 'Simple Mail System',
+    'description' => 'Configure per-module Mail System settings.',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('simple_mailsystem_admin_settings'),
+    'access arguments' => array('administer mailsystem'),
+    'file' => 'simple_mailsystem.admin.inc',
+  );
+  return $items;
+}
