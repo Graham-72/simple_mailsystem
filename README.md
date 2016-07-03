@@ -9,8 +9,8 @@ in the core config file system.mail.json.
 
 This module enables a site's default mail system to be selected
 from the available options, similarly the mail system may be
-assigned for each source of email. So, for example, for Views
-Send each individual view may be assigned a choice of mail system.
+assigned for each source of email. So, for example, for
+Views Send each individual view may be assigned a choice of mail system.
 
 This is a much simplifed alternative to the Mailsystem module.
 
