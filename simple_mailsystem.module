@@ -20,8 +20,7 @@ function simple_mailsystem_config_info() {
  *
  * Defines a permission for managing the mail_system variable.
  */
-function simple_mailsystem_permission()
-{
+function simple_mailsystem_permission() {
   return array(
     'administer mailsystem' => array(
       'title' => t('Administer Mail System'),
@@ -35,8 +34,7 @@ function simple_mailsystem_permission()
 /**
  * Implements hook_menu().
  */
-function simple_mailsystem_menu()
-{
+function simple_mailsystem_menu() {
   $items['admin/config/system/simple_mailsystem'] = array(
     'title' => 'Simple Mail System',
     'description' => 'Configure per-module Mail System settings.',
