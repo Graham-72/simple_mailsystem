@@ -3,8 +3,8 @@
 /**
  * @file
  * Administrative form for setting the mail_system variable.
- * config system.mail contains an array in which the key is
- * the class of the system originating the mail and the value
+ * config system.mail contains an array in which the key identifies
+ * the module class originating the mail and the value
  * is the name of the mail system to send it.
  * The first key is default-system and its value is
  * DefaultMailSystem.
@@ -15,18 +15,17 @@
  *
  * First get current mail system settings
  * this will give the current settings for each
- * class originating mail.
+ * module class originating mail.
  * Note: classes are added by modules writing to
  * config system.mail
  */
 $mail_systems = config_get('system.mail');
 $mail_default = $mail_systems['default-system'];
-// get current mail system options and save as a config file.
-$simple_mailsystem_options = simple_mailsystem_get_options();
-config_set('simple_mailsystem.settings', 'options', $simple_mailsystem_options);
 
 /**
- * Returns a list of classes which implement MailSystemInterface.
+ * Create a list of modules which implement MailSystemInterface.
+ * Look for modules that include a class named '...mailsystem'
+ * in their hook_autoload_info() implementation.
  */
 function &simple_mailsystem_get_options() {
   $mailsystem_options = array();
@@ -48,6 +47,7 @@ function &simple_mailsystem_get_options() {
 
 function simple_mailsystem_admin_settings() {
   $mail_systems = config_get('system.mail');
+  $mail_services = &simple_mailsystem_get_options();
   $mail_default = array("default-system" => $mail_systems['default-system']);
 
   $form['simple_mailsystem'] = array(
@@ -60,22 +60,23 @@ function simple_mailsystem_admin_settings() {
 
   $form['simple_mailsystem']['sitewide'] = array(
     '#type' => 'select',
-    '#title' => t('Select site-wide default mail system.'),
-    '#options' => config_get('simple_mailsystem.settings', 'options'),
+    '#title' => t('Select site-wide <strong>default</strong> mail system.'),
+    '#options' => $mail_services,
     '#default_value' => config_get('system.mail', 'default-system'),
   );
 
   // set mail system used for each originating class
+  // as listed in config system.mail.json
 
   // list mail system classes excluding default
   foreach ($mail_systems as $class => $name) {
     if ($class != 'default-system') {
       $module = $class;
-      $title = t('Set mail system for ') . $module . ' class';
+      $title = t('Set mail system for <strong>') . $module . '</strong> class';
       $form['simple_mailsystem'][$class] = array(
         '#type' => 'select',
         '#title' => $title,
-        '#options' => config_get('simple_mailsystem.settings', 'options'),
+        '#options' => $mail_services,
         '#default_value' => $mail_systems[$class],
       );
     }
@@ -96,10 +97,11 @@ function simple_mailsystem_admin_settings() {
  * Process simple_mailsystem_admin_settings form.
  */
 function simple_mailsystem_admin_settings_submit($form, &$form_state) {
-  // set site-wide default mail system
+  // Set site-wide default mail system.
   config_set('system.mail', 'default-system', $form_state['values']['simple_mailsystem']['sitewide']);
+  // Set other mail-class/mail-system key-value pairs.
   foreach ($form_state['values']['simple_mailsystem'] as $class => $name) {
-    if (!empty($name) && $class != 'default-system') {
+    if (!empty($name) && $class != 'sitewide') {
       config_set('system.mail', $class, $name);
     }
   }

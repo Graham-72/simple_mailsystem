@@ -1,0 +1,15 @@
+<?php
+/**
+ * @file
+ *   simple_mailsystem module update hooks.
+ */
+
+/**
+* Remove redundant variables
+*/
+function simple_mailsystem_update_1000() {
+  $config = config('simple_mailsystem.settings');
+  $config->delete();
+
+  config_clear('system.mail','sitewide');
+}
