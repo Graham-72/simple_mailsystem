@@ -42,6 +42,12 @@ function &simple_mailsystem_get_options() {
       }
     }
   }
+  // look for modules that implement hook_mailengine
+  foreach (module_implements('mailengine') as $module) {
+    // get list from each such module
+    $engines[$module] = module_invoke($module, 'mailengine', 'list');
+    $mailsystem_options[$module] = $engines[$module]['mail_class'];
+  }
   return $mailsystem_options;
 }
 
